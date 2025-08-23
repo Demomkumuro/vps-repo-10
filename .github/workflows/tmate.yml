@@ -1,0 +1,71 @@
+name: VPS with Auto Bot Setup
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [create-vps]
+
+concurrency:
+  group: single-vps-session
+  cancel-in-progress: true
+
+jobs:
+  vps-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      VPS_NAME: ${{ github.event.client_payload.vps_name || 'auto-bot-vps' }}
+    continue-on-error: true
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: System Info
+      run: |
+        echo "System Information:"
+        echo "OS: $(uname -a)"
+        echo "Memory: $(free -h)"
+        echo "Disk: $(df -h)"
+        echo "CPU: $(nproc) cores"
+        echo "Python: $(python3 --version)"
+        echo "Node.js: $(node --version 2>/dev/null || echo 'Not installed')"
+        echo "Git: $(git --version)"
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+
+    - name: Clone and Run Bot
+      run: |
+        # Clone bot repository
+        git clone https://github.com/Demomkumuro3/1234567 bot
+        
+        # Navigate to bot directory
+        cd bot
+        
+        # Install Python dependencies
+        pip install telebot psutil requests aiohttp paramiko rich pyTelegramBotAPI colorama
+        
+        # Install Node.js dependencies
+        npm install user-agents colors hpack socks
+        
+        # Run bot
+        python bot.py
+
+    - name: Setup VPS Session with tmate
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 350
+      with:
+        limit-access-to-actor: false
+        sudo: true
+
+    - name: Auto Restart Workflow
+      if: always()
+      run: |
+        echo "Attempting to restart workflow for continuous VPS..."
+        curl -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          https://api.github.com/repos/${{ github.repository }}/dispatches \
+          -d '{"event_type": "create-vps", "client_payload": {"vps_name": "auto-restart-'$(date +%s)'"}}' || echo "Failed to restart workflow"

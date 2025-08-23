@@ -1,0 +1,25 @@
+name: ⚡ Auto Start VPS
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  auto-vps:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: 🚀 Auto VPS Session
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 360
+      with:
+        limit-access-to-actor: false
+        sudo: true
+    - name: 🔄 Keep Alive
+      run: |
+        echo "🟢 VPS is running..."
+        echo "⏰ Started at: $(date)"
+        for i in $(seq 1 360); do
+          echo "🟢 Auto VPS minute $i/360..."
+          sleep 60
+        done

